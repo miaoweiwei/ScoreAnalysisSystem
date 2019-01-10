@@ -1,6 +1,6 @@
 <DnaLibrary Name="ScoreAnalysisSystem Add-In" RuntimeVersion="v4.0">
   <ExternalLibrary Path="ScoreAnalysisSystem.dll" ExplicitExports="false" LoadFromBytes="true" Pack="true" />
-  
+
   <!-- 
        The RuntimeVersion attribute above allows two settings:
        * RuntimeVersion="v2.0" - for .NET 2.0, 3.0 and 3.5
@@ -47,7 +47,7 @@
             <!--登录管理-->
             <group id="grpLogin" label="成绩分析">
               <!--<button id="btnLogin" onAction="btnLogin_Click" size="large" getLabel="GetLoginLabel" getImage="GetLoginImage"/>-->
-              <button id="btnLogin" onAction="btnLogin_Click" size="large" getLabel="GetLoginLabel"/>
+              <button id="btnAnalysis" onAction="btnAnalysis_Click" size="large" getLabel="GetAnalysisLabel"/>
             </group>
           </tab>
         </tabs>
