@@ -34,6 +34,7 @@ namespace ExcelSubjectAddIn
         private void button2_Click(object sender, RibbonControlEventArgs e)
         {
             share.excelEdit.wb = share.ExcelApp.ActiveWorkbook; //指定工作薄
+            string WorkbookName = share.ExcelApp.ActiveWorkbook.Path + "\\"+share.ExcelApp.ActiveWorkbook.Name;
             Excel.Worksheet ClassSheet = share.excelEdit.AddSheet("班级总体学习情况");
             Excel.Worksheet IndividualSheet = share.excelEdit.AddSheet("个人学习情况分析");
             Excel.Worksheet LessonSheet = share.excelEdit.AddSheet("课程学习情况分析");
@@ -42,6 +43,11 @@ namespace ExcelSubjectAddIn
             share.dataAnalysis.analyClassStudyStatus(importWorkSheet,ClassSheet);
             share.dataAnalysis.analyIndividualStatus(importWorkSheet,IndividualSheet);
             share.dataAnalysis.analyLessonStatus(importWorkSheet,LessonSheet);
+
+
+            share.rendering_diagram.renderClassSheet(ClassSheet,"班级总体学习情况");
+            //share.rendering_diagram.renderIndividualStatus(IndividualSheet,"个人学习情况分析");
+            share.rendering_diagram.renderLessonSheet(LessonSheet, "课程学习情况分析");
         }
     }
 }

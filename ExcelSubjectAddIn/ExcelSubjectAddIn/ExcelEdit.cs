@@ -262,8 +262,21 @@ namespace ExcelSubjectAddIn
             wb.Charts.Add(Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             {
                 wb.ActiveChart.ChartType = ChartType;
-                wb.ActiveChart.SetSourceData(GetSheet(ws).get_Range(GetSheet(ws).Cells[DataSourcesX1, DataSourcesY1], GetSheet(ws).Cells[DataSourcesX2, DataSourcesY2]), ChartDataType);
+                wb.ActiveChart.SetSourceData(GetSheet(ws).Range[GetSheet(ws).Cells[DataSourcesX1, DataSourcesY1], GetSheet(ws).Cells[DataSourcesX2, DataSourcesY2]], ChartDataType);
                 wb.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAsObject, ws);
+
+            }
+        }
+        public void InsertActiveChart(Microsoft.Office.Interop.Excel.XlChartType ChartType, string ws, Excel.Range data, Microsoft.Office.Interop.Excel.XlRowCol ChartDataType)
+        //插入图表操作
+        {
+            ChartDataType = Microsoft.Office.Interop.Excel.XlRowCol.xlColumns;
+            wb.Charts.Add(Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            {
+                wb.ActiveChart.ChartType = ChartType;
+                wb.ActiveChart.SetSourceData(data, ChartDataType);
+                wb.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAsObject, ws);
+
             }
         }
         public bool Save()

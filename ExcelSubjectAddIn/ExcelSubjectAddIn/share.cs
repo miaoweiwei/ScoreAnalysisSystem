@@ -16,6 +16,7 @@ namespace ExcelSubjectAddIn
         public static Microsoft.Office.Tools.ActionsPane acp;
         public static ExcelEdit excelEdit;
         public static dataAnalysis dataAnalysis;
+        public static rendering_diagram rendering_diagram;
         public static Form1 myForm;
         public static int subject_num;
         public static int student_num;

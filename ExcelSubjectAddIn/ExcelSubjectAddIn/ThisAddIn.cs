@@ -11,13 +11,19 @@ namespace ExcelSubjectAddIn
 {
     public partial class ThisAddIn
     {
+        public UserControl1 myUserControl1;
+        private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             share.ExcelApp = Globals.ThisAddIn.Application;   //获取加载项所在的Excel应用程序
             share.myForm = new Form1();
             share.excelEdit = new ExcelEdit();
             share.dataAnalysis = new dataAnalysis();
-         
+            share.rendering_diagram = new rendering_diagram();
+            myUserControl1 = new UserControl1();
+            myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(myUserControl1, "My Task Pane");
+            myCustomTaskPane.DockPosition = Office.MsoCTPDockPosition.msoCTPDockPositionRight;
+            myCustomTaskPane.Visible = true;
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)

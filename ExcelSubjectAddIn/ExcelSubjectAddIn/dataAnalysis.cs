@@ -1,6 +1,8 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
-
+using Office = Microsoft.Office.Core;
+using Microsoft.Office.Tools.Excel;
 namespace ExcelSubjectAddIn
 {
     class dataAnalysis
@@ -181,7 +183,8 @@ namespace ExcelSubjectAddIn
             LessonSheet.Cells[1, 1] = "课程学习情况";
             share.excelEdit.UniteCells(LessonSheet, 1, 1, 1, 10);    //合并单元格
             //60分以下   60 - 69   70 - 79   80 - 89   90 - 100  不及格率 平均分 最高分 最低分
-            int[] frequence = new int[5];   //五个成绩段
+            double[] frequence = new double[5];   //五个成绩段
+            LessonSheet.Cells[lessonMenu_row, 1] = "课程";
             LessonSheet.Cells[lessonMenu_row, 2] = "60分以下";            
             LessonSheet.Cells[lessonMenu_row, 3] = "60~69分";
             LessonSheet.Cells[lessonMenu_row, 4] = "70~79分";
@@ -193,25 +196,33 @@ namespace ExcelSubjectAddIn
 
             LessonSheet.Cells[lessonMenu_row, 10] = "最低分";
 
+            Excel.CheckBoxes ckbs = (Excel.CheckBoxes)LessonSheet.CheckBoxes(Type.Missing);
+            
+
+
             for (int i=0; i<share.subject_num - 3; i++) //除去绩点、四六级
             {
                 //打印课程名
-                LessonSheet.Cells[lessonMenu_row + 2 * i, 1].value = importWorkSheet.Cells[importMenu_row, 3 + i];
+                LessonSheet.Cells[lessonMenu_row +i +1, 1].value = importWorkSheet.Cells[importMenu_row, 3 + i];
                 //计算成绩分布情况
                 frequence = calFrequence(importWorkSheet, 3 + i);   //importWorkSheet第3列开始存储成绩
                 //打印成绩分布情况
-                LessonSheet.Cells[lessonMenu_row + 2 * i +1, 2].value = frequence[0];
-                LessonSheet.Cells[lessonMenu_row + 2 * i +1, 3].value = frequence[1];
-                LessonSheet.Cells[lessonMenu_row + 2 * i +1, 4].value = frequence[2];
-                LessonSheet.Cells[lessonMenu_row + 2 * i +1, 5].value = frequence[3];
-                LessonSheet.Cells[lessonMenu_row + 2 * i +1, 6].value = frequence[4];
+                LessonSheet.Cells[lessonMenu_row + i +1, 2].value = frequence[0];
+                LessonSheet.Cells[lessonMenu_row + i +1, 3].value = frequence[1];
+                LessonSheet.Cells[lessonMenu_row + i +1, 4].value = frequence[2];
+                LessonSheet.Cells[lessonMenu_row + i +1, 5].value = frequence[3];
+                LessonSheet.Cells[lessonMenu_row + i +1, 6].value = frequence[4];
+                LessonSheet.Cells[lessonMenu_row + i + 1, 7].value = frequence[0] / share.student_num;
+                LessonSheet.Cells[lessonMenu_row + i + 1, 8].value = calThisLessonClassAverage(importWorkSheet,3+i);
+                LessonSheet.Cells[lessonMenu_row + i + 1, 9].value = calThisLessonClassHighestScore(importWorkSheet, 3 + i);
+                LessonSheet.Cells[lessonMenu_row + i + 1, 10].value = calThisLessonClassLowestScore(importWorkSheet, 3 + i);
             }
             
         }
-
-        private int[] calFrequence(Excel.Worksheet importWorkSeet, int column)
+        //统计课程班级成绩分布
+        private double[] calFrequence(Excel.Worksheet importWorkSeet, int column)
         {
-            int[] frequence = new int[5] { 0, 0, 0, 0, 0 };
+            double[] frequence = new double[5] { 0, 0, 0, 0, 0 };
             for ( int i=1; i<=share.student_num; i++)
             {
                 if(importWorkSeet.Cells[importMenu_row +i,column].value ==null) frequence[0] += 1;
@@ -254,7 +265,67 @@ namespace ExcelSubjectAddIn
             }
             return frequence;
         }
+        //统计课程班级成绩平均分
+        private double calThisLessonClassAverage(Excel.Worksheet importWorkSeet, int column)
+        {
+            double sum = 0;
+            for (int i = 1; i <= share.student_num; i++)
+            {
+                if (importWorkSeet.Cells[importMenu_row + i, column].value.GetType() == typeof(string))
+                {
+                    sum = sum + 0;
+                }
+                else
+                {
+                    sum += importWorkSeet.Cells[importMenu_row + i, column].value;
+                }
+              
+            }
+            double average = sum / share.student_num;
+            return average;
+        }
+        private double calThisLessonClassHighestScore(Excel.Worksheet importWorkSeet, int column)
+        {
+            double HighestScore = 0;
+            double tempScore = 0;
+            for (int i = 1; i <= share.student_num; i++)
+            {
+                if (importWorkSeet.Cells[importMenu_row + i, column].value.GetType() == typeof(string))
+                {
+                    tempScore = 0;
+                }
+                else
+                {
+                    tempScore = importWorkSeet.Cells[importMenu_row + i, column].value;
+                }
 
-
+                if (tempScore > HighestScore)
+                {
+                    HighestScore = tempScore;
+                }
+            }        
+            return HighestScore;
+        }
+        private double calThisLessonClassLowestScore(Excel.Worksheet importWorkSeet, int column)
+        {
+            double LowestScore = 100;
+            double tempScore = 0;
+            for (int i = 1; i <= share.student_num; i++)
+            {
+                if (importWorkSeet.Cells[importMenu_row + i, column].value.GetType() == typeof(string))
+                {
+                    tempScore = 0;
+                }
+                else
+                {
+                    tempScore = importWorkSeet.Cells[importMenu_row + i, column].value;
+                }
+                if (tempScore < LowestScore)
+                {
+                    LowestScore = tempScore;
+                }
+            }
+            return LowestScore;
+        }
     }
 }
