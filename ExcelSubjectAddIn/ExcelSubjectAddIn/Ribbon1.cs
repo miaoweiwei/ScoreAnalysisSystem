@@ -39,15 +39,32 @@ namespace ExcelSubjectAddIn
             Excel.Worksheet IndividualSheet = share.excelEdit.AddSheet("个人学习情况分析");
             Excel.Worksheet LessonSheet = share.excelEdit.AddSheet("课程学习情况分析");
             Excel.Worksheet importWorkSheet = share.excelEdit.GetSheet("数据导入工作表");
+            share.ClassSheet = ClassSheet;
+            share.IndividualSheet = IndividualSheet;
+            share.LessonSheet = LessonSheet;
+            share.importWorkSheet = importWorkSheet;
             share.dataAnalysis.wb = share.ExcelApp.ActiveWorkbook;
             share.dataAnalysis.analyClassStudyStatus(importWorkSheet,ClassSheet);
             share.dataAnalysis.analyIndividualStatus(importWorkSheet,IndividualSheet);
             share.dataAnalysis.analyLessonStatus(importWorkSheet,LessonSheet);
 
 
-            share.rendering_diagram.renderClassSheet(ClassSheet,"班级总体学习情况");
+            //share.rendering_diagram.renderClassSheet(ClassSheet,"班级总体学习情况");
             //share.rendering_diagram.renderIndividualStatus(IndividualSheet,"个人学习情况分析");
-            share.rendering_diagram.renderLessonSheet(LessonSheet, "课程学习情况分析");
+            //share.rendering_diagram.renderLessonSheet(LessonSheet, "课程学习情况分析");
+        }
+
+        private void button3_Click(object sender, RibbonControlEventArgs e)
+        {
+           if( share.myCustomTaskPane_Lesson.Visible == true)
+            {
+                share.myCustomTaskPane_Lesson.Visible = false;
+            }
+            else
+            {
+                share.myCustomTaskPane_Lesson.Visible = true;
+            }
+
         }
     }
 }

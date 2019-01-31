@@ -20,3 +20,4 @@ F:\MyGit\win7project\Excel\信机期末成绩统计\ExcelSubjectAddIn\ExcelSubje
 F:\MyGit\win7project\Excel\信机期末成绩统计\ExcelSubjectAddIn\ExcelSubjectAddIn\bin\Debug\Spire.Pdf.xml
 F:\MyGit\win7project\Excel\信机期末成绩统计\ExcelSubjectAddIn\ExcelSubjectAddIn\bin\Debug\Spire.XLS.xml
 F:\MyGit\win7project\Excel\信机期末成绩统计\ExcelSubjectAddIn\ExcelSubjectAddIn\obj\Debug\ExcelSubjectAddIn.UserControl1.resources
+F:\MyGit\win7project\Excel\信机期末成绩统计\ExcelSubjectAddIn\ExcelSubjectAddIn\obj\Debug\ExcelSubjectAddIn.UserControl2.resources

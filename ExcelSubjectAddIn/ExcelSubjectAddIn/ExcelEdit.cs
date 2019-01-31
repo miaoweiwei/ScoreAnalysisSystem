@@ -328,6 +328,123 @@ namespace ExcelSubjectAddIn
             app = null;
             GC.Collect();
         }
+
+
+        /// <summary>
+        /// 创建图表
+        /// </summary>
+        /// <param name="m_Book">_Workbook</param>
+        /// <param name="m_Sheet">_Worksheet</param>
+        /// <param name="CharTop">距页面顶部位置（按格数算）</param>
+        /// <param name="CharLeft">距页面左侧位置（按格数算）</param>
+        /// <param name="Width">图表外框宽度</param>
+        /// <param name="Height">图表外框高度</param>
+        /// <param name="Title">图表标题名称</param>
+        /// <param name="range">要插入图表的范围值</param>
+        /// <param name="CategoryLabels">类别标签值</param>
+        /// <param name="SeriesLabels">系列标签值</param>
+        /// <param name="MinimumScale">x轴最小值</param>
+        /// <param name="MaximumScale">x轴最大值</param>
+        /// <param name="CharName">图表名称(为了区份操作的不是一个图，无其他用处)</param>
+        public void CreateChart(Microsoft.Office.Interop.Excel._Workbook m_Book, Microsoft.Office.Interop.Excel._Worksheet m_Sheet, int CharTop, int CharLeft, float Width, float Height, string Title, Excel.Range range, object CategoryLabels, object SeriesLabels, double MinimumScale, double MaximumScale, string CharName)
+        {
+            Microsoft.Office.Interop.Excel.Range oResizeRange;
+            Microsoft.Office.Interop.Excel.Series oSeries;
+            m_Book.Charts.Add(Type.Missing, Type.Missing, 1, Type.Missing);
+            m_Book.ActiveChart.ChartWizard(range, Microsoft.Office.Interop.Excel.XlChartType.xlColumnClustered, Type.Missing, Microsoft.Office.Interop.Excel.XlRowCol.xlColumns, CategoryLabels, SeriesLabels, true, Title, "各市", "百分比(%)", Type.Missing);
+            //以下是给图表放在指定位置
+            m_Book.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAsObject, m_Sheet.Name);
+            oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Rows.get_Item(CharTop, Type.Missing);
+            m_Sheet.Shapes.Item(CharName).Top = (float)(double)oResizeRange.Top;  //调图表的位置上边距
+            oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Columns.get_Item(CharLeft, Type.Missing);
+            m_Sheet.Shapes.Item(CharName).Left = (float)(double)oResizeRange.Left;//调图表的位置左边距
+            m_Sheet.Shapes.Item(CharName).Width = Width;   //调图表的宽度
+            m_Sheet.Shapes.Item(CharName).Height = Height;  //调图表的高度
+            m_Book.ActiveChart._ApplyDataLabels();//数据标签
+            m_Book.ActiveChart.PlotArea.Interior.ColorIndex = 19;  //设置绘图区的背景色
+            m_Book.ActiveChart.PlotArea.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置绘图区边框线条
+            m_Book.ActiveChart.ChartArea.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置边框线条
+            m_Book.ActiveChart.HasDataTable = false;
+            //设置Legend图例的位置和格式
+            m_Book.ActiveChart.Legend.Interior.ColorIndex = Microsoft.Office.Interop.Excel.XlColorIndex.xlColorIndexNone;
+            m_Book.ActiveChart.Legend.Font.Name = "宋体";
+            //设置X轴的显示
+            Microsoft.Office.Interop.Excel.Axis xAxis = (Microsoft.Office.Interop.Excel.Axis)m_Book.ActiveChart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue, Microsoft.Office.Interop.Excel.XlAxisGroup.xlPrimary);
+            xAxis.MajorGridlines.Border.ColorIndex = 1;//gridLine横向线条的颜色
+            xAxis.HasTitle = true;
+            xAxis.MinimumScale = MinimumScale;
+            xAxis.MaximumScale = MaximumScale;
+            xAxis.TickLabels.Font.Name = "宋体";
+            xAxis.TickLabels.Font.Size = 8;
+            //设置Y轴的显示
+            Microsoft.Office.Interop.Excel.Axis yAxis = (Microsoft.Office.Interop.Excel.Axis)m_Book.ActiveChart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlCategory, Microsoft.Office.Interop.Excel.XlAxisGroup.xlPrimary);
+            yAxis.TickLabels.Orientation = Microsoft.Office.Interop.Excel.XlTickLabelOrientation.xlTickLabelOrientationHorizontal;//Y轴显示的方向,是水平还是垂直等
+            yAxis.TickLabels.Font.Size = 8;
+            yAxis.TickLabels.Font.Name = "宋体";
+            oSeries = (Microsoft.Office.Interop.Excel.Series)m_Book.ActiveChart.SeriesCollection(1);
+            oSeries.Border.ColorIndex = 45;
+        }
+
+        public void CreateRadarChart(Microsoft.Office.Interop.Excel._Workbook m_Book, Microsoft.Office.Interop.Excel._Worksheet m_Sheet, int CharTop, int CharLeft, float Width, float Height, string Title, Excel.Range range,string CharName , double Chart_index)
+        {
+
+            Microsoft.Office.Interop.Excel.Range oResizeRange;
+
+            Microsoft.Office.Interop.Excel.Series oSeries;
+
+            m_Book.Charts.Add(Type.Missing, Type.Missing, 1, Type.Missing);
+            m_Book.ActiveChart.Name = CharName;
+
+            m_Book.ActiveChart.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xlRadarFilled;
+            //设置图形
+            //m_Book.ActiveChart.ChartStyle = 253;
+
+            //设置数据取值范围
+            m_Book.ActiveChart.SetSourceData(range, Microsoft.Office.Interop.Excel.XlRowCol.xlRows);
+            //以下是给图表放在指定位置
+            m_Book.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAutomatic, m_Sheet.Name);
+            oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Rows.get_Item(10, Type.Missing);
+            m_Sheet.Shapes.Item("Chart 1").Name = CharName;
+            m_Sheet.Shapes.Item(CharName).Top = (float)(Chart_index) * 200;  //调图表的位置上边距
+            oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Columns.get_Item(11, Type.Missing);  //调图表的位置左边距
+            m_Sheet.Shapes.Item(CharName).Left = (float)(double)oResizeRange.Left;
+            m_Sheet.Shapes.Item(CharName).Width = 288;   //调图表的宽度
+            m_Sheet.Shapes.Item(CharName).Height = 200;  //调图表的高度
+            //m_Book.ActiveChart.PlotArea.Interior.Color = "blue";  //设置绘图区的背景色 
+            m_Book.ActiveChart.PlotArea.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置绘图区边框线条
+            m_Book.ActiveChart.PlotArea.Width = 160;
+            m_Book.ActiveChart.PlotArea.Height = 120;
+            m_Book.ActiveChart.PlotArea.Top = 30;
+            m_Book.ActiveChart.PlotArea.Left = 0;
+            // m_Book.ActiveChart.ChartArea.Interior.ColorIndex = 10; //设置整个图表的背影颜色
+            // m_Book.ActiveChart.ChartArea.Border.ColorIndex = 8;// 设置整个图表的边框颜色
+            m_Book.ActiveChart.ChartArea.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;//设置边框线条
+            m_Book.ActiveChart.HasDataTable = false;
+            m_Book.ActiveChart.HasTitle = true;
+            m_Book.ActiveChart.HasLegend = true;
+            m_Book.ActiveChart.Shapes.AddLabel(Microsoft.Office.Core.MsoTextOrientation.msoTextOrientationHorizontal, 0, 0, 50, 50);
+
+            //设置Legend图例的位置和格式
+            //m_Book.ActiveChart.Legend.Top = 50; //具体设置图例的上边距
+            m_Book.ActiveChart.Legend.Left = 410;//具体设置图例的左边距
+            m_Book.ActiveChart.Legend.Interior.ColorIndex = Microsoft.Office.Interop.Excel.XlColorIndex.xlColorIndexNone;
+            m_Book.ActiveChart.Legend.Width = 100;
+            m_Book.ActiveChart.Legend.Font.Size = 12;
+            m_Book.ActiveChart.Legend.Font.Bold = true;
+            m_Book.ActiveChart.Legend.Position = Microsoft.Office.Interop.Excel.XlLegendPosition.xlLegendPositionCorner;//设置图例的位置
+            m_Book.ActiveChart.Legend.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置图例边框线条
+
+            oSeries = (Microsoft.Office.Interop.Excel.Series)m_Book.ActiveChart.SeriesCollection(1);
+
+            oSeries.Border.ColorIndex = 45;
+            oSeries.Border.Weight = Microsoft.Office.Interop.Excel.XlBorderWeight.xlThin;
+            //m_Book.ActiveChart.SaveAs("a.pic");
+
+            m_Book.ActiveChart.ChartTitle.Text = CharName;
+
+        }
+
+
     }
 }
 

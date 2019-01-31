@@ -168,7 +168,7 @@ namespace ExcelSubjectAddIn
 
 
 
-        public void CreateChart(Microsoft.Office.Interop.Excel._Workbook m_Book, Microsoft.Office.Interop.Excel._Worksheet m_Sheet, Excel.Range data) 
+        public void CreateChart(Microsoft.Office.Interop.Excel._Workbook m_Book, Microsoft.Office.Interop.Excel._Worksheet m_Sheet, Excel.Range data, string ChartName, int Chart_index) 
         {
 
             Microsoft.Office.Interop.Excel.Range oResizeRange;
@@ -176,29 +176,33 @@ namespace ExcelSubjectAddIn
             Microsoft.Office.Interop.Excel.Series oSeries;
 
             m_Book.Charts.Add(Missing.Value, Missing.Value, 1, Missing.Value);
+            m_Book.ActiveChart.Name = ChartName;
+            
             m_Book.ActiveChart.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xlPie;//设置图形
             m_Book.ActiveChart.ChartStyle = 253;
+            
             //设置数据取值范围
 
             m_Book.ActiveChart.SetSourceData(data, Microsoft.Office.Interop.Excel.XlRowCol.xlRows);
 
-            m_Book.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAutomatic, title);
-
+            //m_Book.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAutomatic, ChartName);
+            
             //以下是给图表放在指定位置
 
             m_Book.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAutomatic, m_Sheet.Name);
-
+            
             oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Rows.get_Item(10, Missing.Value);
-
-            m_Sheet.Shapes.Item("Chart 1").Top = 0;  //调图表的位置上边距
-            oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Columns.get_Item(5, Missing.Value);  //调图表的位置左边距
-            m_Sheet.Shapes.Item("Chart 1").Left = (float)(double)oResizeRange.Left;
-            m_Sheet.Shapes.Item("Chart 1").Width = 432;   //调图表的宽度
-            m_Sheet.Shapes.Item("Chart 1").Height = 300;  //调图表的高度
+            m_Sheet.Shapes.Item("Chart 1").Name = ChartName;
+            
+            m_Sheet.Shapes.Item(ChartName).Top = Chart_index*200;  //调图表的位置上边距
+            oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Columns.get_Item(11, Missing.Value);  //调图表的位置左边距
+            m_Sheet.Shapes.Item(ChartName).Left = (float)(double)oResizeRange.Left;
+            m_Sheet.Shapes.Item(ChartName).Width = 288;   //调图表的宽度
+            m_Sheet.Shapes.Item(ChartName).Height = 200;  //调图表的高度
             //m_Book.ActiveChart.PlotArea.Interior.Color = "blue";  //设置绘图区的背景色 
             m_Book.ActiveChart.PlotArea.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置绘图区边框线条
-            m_Book.ActiveChart.PlotArea.Width = 400;
-            m_Book.ActiveChart.PlotArea.Height = 300;
+            m_Book.ActiveChart.PlotArea.Width = 160;
+            m_Book.ActiveChart.PlotArea.Height = 120;
             m_Book.ActiveChart.PlotArea.Top = 30;
             m_Book.ActiveChart.PlotArea.Left = 0;
             // m_Book.ActiveChart.ChartArea.Interior.ColorIndex = 10; //设置整个图表的背影颜色
@@ -224,6 +228,8 @@ namespace ExcelSubjectAddIn
             oSeries.Border.ColorIndex = 45;
             oSeries.Border.Weight = Microsoft.Office.Interop.Excel.XlBorderWeight.xlThin;
             //m_Book.ActiveChart.SaveAs("a.pic");
+
+            m_Book.ActiveChart.ChartTitle.Text = ChartName;
         }
 
     }

@@ -11,8 +11,6 @@ namespace ExcelSubjectAddIn
 {
     public partial class ThisAddIn
     {
-        public UserControl1 myUserControl1;
-        private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             share.ExcelApp = Globals.ThisAddIn.Application;   //获取加载项所在的Excel应用程序
@@ -20,15 +18,60 @@ namespace ExcelSubjectAddIn
             share.excelEdit = new ExcelEdit();
             share.dataAnalysis = new dataAnalysis();
             share.rendering_diagram = new rendering_diagram();
-            myUserControl1 = new UserControl1();
-            myCustomTaskPane = Globals.ThisAddIn.CustomTaskPanes.Add(myUserControl1, "My Task Pane");
-            myCustomTaskPane.DockPosition = Office.MsoCTPDockPosition.msoCTPDockPositionRight;
-            myCustomTaskPane.Visible = true;
+            share.myUserControl_Lesson = new UserControl1();
+            share.myCustomTaskPane_Lesson = Globals.ThisAddIn.CustomTaskPanes.Add(share.myUserControl_Lesson, "课程情况分析");//添加任务窗
+            share.myCustomTaskPane_Lesson.DockPosition = Office.MsoCTPDockPosition.msoCTPDockPositionLeft;
+            share.myUserControl_individual = new UserControl2();
+            share.myCustomTaskPane_individual = Globals.ThisAddIn.CustomTaskPanes.Add(share.myUserControl_individual, "个人情况分析");
+            share.myCustomTaskPane_individual.DockPosition = Office.MsoCTPDockPosition.msoCTPDockPositionLeft;
+            share.ExcelApp.SheetActivate += new Excel.AppEvents_SheetActivateEventHandler(Workbook_SheetActivate);
+
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            
         }
+
+        void Workbook_SheetActivate(object sheet)
+        {
+            
+            ReportEventWithSheetParameter("Workbook.SheetActivate", sheet);
+        }
+
+        void ReportEventWithSheetParameter(string eventName, object sheet)
+        {
+            Excel.Worksheet worksheet = sheet as Excel.Worksheet;
+
+            if (worksheet != null)
+            {
+                if(worksheet.Name == "课程学习情况分析")
+                {
+                    share.myCustomTaskPane_individual.Visible = false;
+                    share.myCustomTaskPane_Lesson.Visible = true;
+                }
+                else if(worksheet.Name == "个人学习情况分析")
+                {
+                    share.myCustomTaskPane_Lesson.Visible = false;
+                    share.myCustomTaskPane_individual.Visible = true;
+
+                }
+                else
+                {
+                    share.myCustomTaskPane_individual.Visible = false;
+                    share.myCustomTaskPane_Lesson.Visible = false;
+                }
+                //MessageBox.Show(String.Format("{0} ({1})", eventName, worksheet.Name));
+            }
+
+            Excel.Chart chart = sheet as Excel.Chart;
+
+            if (chart != null)
+            {
+                //MessageBox.Show(String.Format("{0} ({1})", eventName, chart.Name));
+            }
+        }
+
 
         #region VSTO 生成的代码
 
