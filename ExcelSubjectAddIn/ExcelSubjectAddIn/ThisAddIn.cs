@@ -15,6 +15,15 @@ namespace ExcelSubjectAddIn
         {
             share.ExcelApp = Globals.ThisAddIn.Application;   //获取加载项所在的Excel应用程序
             share.myForm = new Form1();
+
+            share.ExcelApp.SheetActivate += new Excel.AppEvents_SheetActivateEventHandler(Workbook_SheetActivate);
+            //(Globals.ThisAddIn.Application).WorkbookActivate += new Excel.AppEvents_WorkbookActivateEventHandler(OnExcelWorkbookActivate);
+            share.ExcelApp.WorkbookActivate += new Excel.AppEvents_WorkbookActivateEventHandler(OnExcelWorkbookActivate);
+
+        }
+
+        private void OnExcelWorkbookActivate(Excel.Workbook Wb)
+        {
             share.excelEdit = new ExcelEdit();
             share.dataAnalysis = new dataAnalysis();
             share.rendering_diagram = new rendering_diagram();
@@ -24,8 +33,11 @@ namespace ExcelSubjectAddIn
             share.myUserControl_individual = new UserControl2();
             share.myCustomTaskPane_individual = Globals.ThisAddIn.CustomTaskPanes.Add(share.myUserControl_individual, "个人情况分析");
             share.myCustomTaskPane_individual.DockPosition = Office.MsoCTPDockPosition.msoCTPDockPositionLeft;
-            share.ExcelApp.SheetActivate += new Excel.AppEvents_SheetActivateEventHandler(Workbook_SheetActivate);
 
+            share.CurrentWorkbook = Wb;
+            share.excelEdit.wb = share.ExcelApp.ActiveWorkbook; //指定工作薄
+            Excel.Worksheet importWorkSheet = share.excelEdit.GetSheet("数据导入工作表");
+            share.importWorkSheet = importWorkSheet;
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
@@ -33,6 +45,7 @@ namespace ExcelSubjectAddIn
             
         }
 
+   
         void Workbook_SheetActivate(object sheet)
         {
             

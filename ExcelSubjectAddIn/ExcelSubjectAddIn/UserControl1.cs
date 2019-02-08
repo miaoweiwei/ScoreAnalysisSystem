@@ -40,7 +40,13 @@ namespace ExcelSubjectAddIn
                     share.rendering_diagram.addChart_LessonSheet(share.LessonSheet, checkedListBox_Lesson.GetItemText(checkedListBox_Lesson.Items[i]), Chart_index);
                 }
             }
-
+        }
+        public void cleanListBox()
+        {
+            for(int i=0; i< checkedListBox_Lesson.Items.Count;)
+            {
+                checkedListBox_Lesson.Items.RemoveAt(0);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -57,6 +63,13 @@ namespace ExcelSubjectAddIn
             {
                 checkedListBox_Lesson.SetItemChecked(i, false);
             }
+ 
+
+        }
+
+        private void checkedListBox_Lesson_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

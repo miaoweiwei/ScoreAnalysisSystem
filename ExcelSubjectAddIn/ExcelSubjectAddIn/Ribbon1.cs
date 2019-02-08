@@ -27,14 +27,17 @@ namespace ExcelSubjectAddIn
             importWorkSheet.Cells[2, 3] = "课程1";
             importWorkSheet.Cells[2, 4] = "课程2";
             importWorkSheet.Cells[2, 5] = "课程...";
-         
-      
+            importWorkSheet.Cells[2, 6] = "四级";
+            importWorkSheet.Cells[2, 7] = "六级";
+            importWorkSheet.Cells[2, 8] = "目前绩点";
+               
         }
 
         private void button2_Click(object sender, RibbonControlEventArgs e)
         {
+            //分配变量
             share.excelEdit.wb = share.ExcelApp.ActiveWorkbook; //指定工作薄
-            string WorkbookName = share.ExcelApp.ActiveWorkbook.Path + "\\"+share.ExcelApp.ActiveWorkbook.Name;
+            //string WorkbookName = share.ExcelApp.ActiveWorkbook.Path + "\\"+share.ExcelApp.ActiveWorkbook.Name;
             Excel.Worksheet ClassSheet = share.excelEdit.AddSheet("班级总体学习情况");
             Excel.Worksheet IndividualSheet = share.excelEdit.AddSheet("个人学习情况分析");
             Excel.Worksheet LessonSheet = share.excelEdit.AddSheet("课程学习情况分析");
@@ -44,14 +47,21 @@ namespace ExcelSubjectAddIn
             share.LessonSheet = LessonSheet;
             share.importWorkSheet = importWorkSheet;
             share.dataAnalysis.wb = share.ExcelApp.ActiveWorkbook;
+            //清除任务窗格中的记录
+            share.myUserControl_individual.cleanListBox();
+            share.myUserControl_Lesson.cleanListBox();
+
+
+
+
             share.dataAnalysis.analyClassStudyStatus(importWorkSheet,ClassSheet);
             share.dataAnalysis.analyIndividualStatus(importWorkSheet,IndividualSheet);
             share.dataAnalysis.analyLessonStatus(importWorkSheet,LessonSheet);
 
 
-            //share.rendering_diagram.renderClassSheet(ClassSheet,"班级总体学习情况");
-            //share.rendering_diagram.renderIndividualStatus(IndividualSheet,"个人学习情况分析");
-            //share.rendering_diagram.renderLessonSheet(LessonSheet, "课程学习情况分析");
+            share.rendering_diagram.renderClassSheet(ClassSheet,"班级总体学习情况");
+            share.rendering_diagram.renderIndividualSheet(IndividualSheet,"个人学习情况分析");
+            share.rendering_diagram.renderLessonSheet(LessonSheet, "课程学习情况分析");
         }
 
         private void button3_Click(object sender, RibbonControlEventArgs e)

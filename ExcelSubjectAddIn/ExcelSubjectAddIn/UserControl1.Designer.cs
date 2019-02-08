@@ -41,6 +41,7 @@
             this.checkedListBox_Lesson.Name = "checkedListBox_Lesson";
             this.checkedListBox_Lesson.Size = new System.Drawing.Size(188, 372);
             this.checkedListBox_Lesson.TabIndex = 0;
+            this.checkedListBox_Lesson.SelectedIndexChanged += new System.EventHandler(this.checkedListBox_Lesson_SelectedIndexChanged);
             // 
             // button1
             // 

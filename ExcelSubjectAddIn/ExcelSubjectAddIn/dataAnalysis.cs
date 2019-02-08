@@ -33,7 +33,7 @@ namespace ExcelSubjectAddIn
         public void analyClassStudyStatus(Excel.Worksheet importWorkSheet, Excel.Worksheet ClassSheet)
         {
             ClassSheet.Cells[1, 1] = "班级学习情况";
-            share.excelEdit.UniteCells(ClassSheet, 1, 1, 1, 10);    //合并单元格
+            share.excelEdit.UniteCells(ClassSheet, 1, 1, 1, share.subject_num -3 +8);    //合并单元格
             //统计科目数量
             int count = 0;
             while (importWorkSheet.Cells[2, 3 + count].value != null)
@@ -50,24 +50,24 @@ namespace ExcelSubjectAddIn
             share.student_num = count;
             //填写项目
                       
-            ClassSheet.Cells[classMenu_row, 1] = "学号";
-            ClassSheet.Cells[classMenu_row, 2] = "姓名";
-            ClassSheet.Cells[classMenu_row, 3] = "绩点";
-            ClassSheet.Cells[classMenu_row, 4] = "不及格科目数";
-            ClassSheet.Cells[classMenu_row, 5] = "总分";
-            ClassSheet.Cells[classMenu_row, 6] = "平均分";
+            ClassSheet.Cells[classMenu_row, 1].value = "学号";
+            ClassSheet.Cells[classMenu_row, 2].value = "姓名";
+            ClassSheet.Cells[classMenu_row, 3].value = "绩点";
+            ClassSheet.Cells[classMenu_row, 4].value = "不及格科目数";
+            ClassSheet.Cells[classMenu_row, 5].value = "总分";
+            ClassSheet.Cells[classMenu_row, 6].value = "平均分";
             for (int i=0;i<share.subject_num-1;i++) //去除最后绩点
             {
-                ClassSheet.Cells[classMenu_row, 7 + i] = importWorkSheet.Cells[importMenu_row, 3 + i];
+                ClassSheet.Cells[classMenu_row, 7 + i].value = importWorkSheet.Cells[importMenu_row, 3 + i].value ;
             }
             //填写班级情况明细表   
             for (int i= 1; i<= share.student_num; i++)    
             //外循环遍历importWorkSheet中学生所在行
             {
                 //填写学号
-                ClassSheet.Cells[classMenu_row + i, 1] = importWorkSheet.Cells[importMenu_row + i, 1];
+                ClassSheet.Cells[classMenu_row + i, 1].value = importWorkSheet.Cells[importMenu_row + i, 1].value;
                 //填写姓名
-                ClassSheet.Cells[classMenu_row + i, 2] = importWorkSheet.Cells[importMenu_row + i, 2];
+                ClassSheet.Cells[classMenu_row + i, 2].value = importWorkSheet.Cells[importMenu_row + i, 2].value;
                 //填写绩点
                 ClassSheet.Cells[classMenu_row + i, 3].value = importWorkSheet.Cells[importMenu_row + i, 2+share.subject_num].value;
                 //填写该学生不及格科目数
@@ -79,7 +79,28 @@ namespace ExcelSubjectAddIn
                 //填写该学生所有科目考试成绩
                 for(int j=0; j< share.subject_num -1 ; j++) //去除绩点
                 {
-                    ClassSheet.Cells[classMenu_row + i, 7 + j].value = importWorkSheet.Cells[importMenu_row + i, 3 + j].value;
+                    if (importWorkSheet.Cells[importMenu_row + i, 3 + j].value == null)
+                    {
+                        ClassSheet.Cells[classMenu_row + i, 7 + j].value = 0;
+                    }
+                    else if (importWorkSheet.Cells[importMenu_row + i, 3 + j].value.GetType() == typeof(string))
+                    {
+                        if (importWorkSheet.Cells[importMenu_row + i, 3 + j].value == "")
+                        {
+                            ClassSheet.Cells[classMenu_row + i, 7 + j].value = 0;
+                        } else if (importWorkSheet.Cells[importMenu_row + i, 3 + j].value == "是" || importWorkSheet.Cells[importMenu_row + i, 3 + j].value == "否")
+                        {
+                            ClassSheet.Cells[classMenu_row + i, 7 + j].value = importWorkSheet.Cells[importMenu_row + i, 3 + j].value;
+                        }
+                        else
+                        {
+                            MessageBox.Show("data wrong");
+                        }
+
+                    }else
+                    {
+                        ClassSheet.Cells[classMenu_row + i, 7 + j].value = importWorkSheet.Cells[importMenu_row + i, 3 + j].value;
+                    }                                                          
                 }
             }
             
@@ -172,16 +193,36 @@ namespace ExcelSubjectAddIn
         }
         private double calClassG4passRate(Excel.Worksheet importWorkSheet)
         {
-            return 0;
+            double passCount = 0;
+            for (int i = 1; i <= share.student_num; i++)
+            {
+                string Grade4 = importWorkSheet.Cells[classMenu_row + i, 2 + share.subject_num - 2].value;
+                if (Grade4 == "是")
+                {
+                    passCount += 1;
+                }
+            }
+            double rate = passCount / share.student_num;
+            return rate;
         }
         private double calClassG6passRate(Excel.Worksheet importWorkSheet)
         {
-            return 0;
+            double passCount = 0;
+            for (int i = 1; i <= share.student_num; i++)
+            {
+                string Grade6 = importWorkSheet.Cells[classMenu_row + i, 2 + share.subject_num-1].value;
+                if (Grade6 == "是")
+                {
+                    passCount += 1;
+                }
+            }
+            double rate = passCount / share.student_num;
+            return rate;
         }
         public void analyIndividualStatus(Excel.Worksheet importWorkSheet, Excel.Worksheet IndividualSheet)
         {
             IndividualSheet.Cells[1, 1] = "2015级计算机科学与技术（师范）";
-            share.excelEdit.UniteCells(IndividualSheet, 1, 1, 1, 10);    //合并单元格
+            share.excelEdit.UniteCells(IndividualSheet, 1, 1, 1, share.subject_num -3 +9);    //合并单元格
             IndividualSheet.Cells[individualMenu_row, 1] = "学号";
             share.excelEdit.UniteCells(IndividualSheet, individualMenu_row, 1, individualMenu_row + 1, 1);    //合并单元格
             IndividualSheet.Cells[individualMenu_row, 2] = "姓名";
@@ -205,19 +246,21 @@ namespace ExcelSubjectAddIn
                 share.excelEdit.UniteCells(IndividualSheet, 2, 2 + share.subject_num - 3 + i, 3, 2 + share.subject_num - 3 + i);    //合并单元格
             }
 
-            //会耦合
+           
             int[] sort_index = sort(3);
             for (int i=0; i< share.student_num; i++)
             {
-                //添加姓名复选框
-                share.myUserControl_individual.addCheckItem(IndividualSheet.Cells[individualMenu_row + i + 2, 2].value);
-
                 //IndividualSheet添加学号
                 share.IndividualSheet.Cells[individualMenu_row + 2 + i, 1].value = share.ClassSheet.Cells[classMenu_row + 1 + sort_index[i], 1];
                 //IndividualSheet添加姓名
                 share.IndividualSheet.Cells[individualMenu_row + 2 + i, 2].value = share.ClassSheet.Cells[classMenu_row +1 +sort_index[i] ,2];
+
+                //会耦合
+                //添加姓名复选框
+                share.myUserControl_individual.addCheckItem(IndividualSheet.Cells[individualMenu_row + i + 2, 2].value);
+
                 //IndividualSheet添加课程
-                for(int j=0; j<share.subject_num -3;j++)
+                for (int j=0; j<share.subject_num -3;j++)
                 {
                     share.IndividualSheet.Cells[individualMenu_row + 2 + i, 3 +j].value = share.ClassSheet.Cells[classMenu_row + 1 + sort_index[i], 7+j];
                 }

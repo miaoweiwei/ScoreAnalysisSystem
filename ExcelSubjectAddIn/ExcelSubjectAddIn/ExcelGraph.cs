@@ -12,7 +12,7 @@ using System.Reflection;
 using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
-
+using  System.Windows.Forms;
 namespace ExcelSubjectAddIn
 {
 
@@ -176,8 +176,7 @@ namespace ExcelSubjectAddIn
             Microsoft.Office.Interop.Excel.Series oSeries;
 
             m_Book.Charts.Add(Missing.Value, Missing.Value, 1, Missing.Value);
-            m_Book.ActiveChart.Name = ChartName;
-            
+       
             m_Book.ActiveChart.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xlPie;//设置图形
             m_Book.ActiveChart.ChartStyle = 253;
             
@@ -192,8 +191,8 @@ namespace ExcelSubjectAddIn
             m_Book.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAutomatic, m_Sheet.Name);
             
             oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Rows.get_Item(10, Missing.Value);
+
             m_Sheet.Shapes.Item("Chart 1").Name = ChartName;
-            
             m_Sheet.Shapes.Item(ChartName).Top = Chart_index*200;  //调图表的位置上边距
             oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Columns.get_Item(11, Missing.Value);  //调图表的位置左边距
             m_Sheet.Shapes.Item(ChartName).Left = (float)(double)oResizeRange.Left;

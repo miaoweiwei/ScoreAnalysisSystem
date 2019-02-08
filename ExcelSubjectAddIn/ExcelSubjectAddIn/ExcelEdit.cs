@@ -385,7 +385,7 @@ namespace ExcelSubjectAddIn
             oSeries.Border.ColorIndex = 45;
         }
 
-        public void CreateRadarChart(Microsoft.Office.Interop.Excel._Workbook m_Book, Microsoft.Office.Interop.Excel._Worksheet m_Sheet, int CharTop, int CharLeft, float Width, float Height, string Title, Excel.Range range,string CharName , double Chart_index)
+        public void CreateRadarChart(Microsoft.Office.Interop.Excel._Workbook m_Book, Microsoft.Office.Interop.Excel._Worksheet m_Sheet, int CharTop, int CharLeft, float Width, float Height, string Title, Excel.Range range,string CharName , double Chart_index , string subtitleText)
         {
 
             Microsoft.Office.Interop.Excel.Range oResizeRange;
@@ -393,7 +393,7 @@ namespace ExcelSubjectAddIn
             Microsoft.Office.Interop.Excel.Series oSeries;
 
             m_Book.Charts.Add(Type.Missing, Type.Missing, 1, Type.Missing);
-            m_Book.ActiveChart.Name = CharName;
+
 
             m_Book.ActiveChart.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xlRadarFilled;
             //设置图形
@@ -405,6 +405,7 @@ namespace ExcelSubjectAddIn
             m_Book.ActiveChart.Location(Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAutomatic, m_Sheet.Name);
             oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Rows.get_Item(10, Type.Missing);
             m_Sheet.Shapes.Item("Chart 1").Name = CharName;
+
             m_Sheet.Shapes.Item(CharName).Top = (float)(Chart_index) * 200;  //调图表的位置上边距
             oResizeRange = (Microsoft.Office.Interop.Excel.Range)m_Sheet.Columns.get_Item(11, Type.Missing);  //调图表的位置左边距
             m_Sheet.Shapes.Item(CharName).Left = (float)(double)oResizeRange.Left;
@@ -422,7 +423,16 @@ namespace ExcelSubjectAddIn
             m_Book.ActiveChart.HasDataTable = false;
             m_Book.ActiveChart.HasTitle = true;
             m_Book.ActiveChart.HasLegend = true;
-            m_Book.ActiveChart.Shapes.AddLabel(Microsoft.Office.Core.MsoTextOrientation.msoTextOrientationHorizontal, 0, 0, 50, 50);
+
+            var subframe = m_Book.ActiveChart.Shapes.AddLabel(Microsoft.Office.Core.MsoTextOrientation.msoTextOrientationHorizontal, 500, 400, 100, 100).TextFrame2;
+            //(Excel.Series)m_Book.ActiveChart.SeriesCollection(1).DataLabels(1) as Excel.DataLabel).Text ="a";
+            // Add title
+            var subtitle = subframe.TextRange;
+            //subtitle.Text = "六级 是\n四级 是";
+            subtitle.Text = subtitleText;
+            subtitle.Font.NameFarEast = "微软雅黑";
+            subtitle.Font.Size = 12;
+            
 
             //设置Legend图例的位置和格式
             //m_Book.ActiveChart.Legend.Top = 50; //具体设置图例的上边距
@@ -435,13 +445,16 @@ namespace ExcelSubjectAddIn
             m_Book.ActiveChart.Legend.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置图例边框线条
 
             oSeries = (Microsoft.Office.Interop.Excel.Series)m_Book.ActiveChart.SeriesCollection(1);
-
+            oSeries.Name = CharName;
             oSeries.Border.ColorIndex = 45;
             oSeries.Border.Weight = Microsoft.Office.Interop.Excel.XlBorderWeight.xlThin;
-            //m_Book.ActiveChart.SaveAs("a.pic");
+            //oSeries.Values = 1;
+            m_Book.ActiveChart.ChartTitle.Text = Title;
+            //m_Book.ActiveChart.SaveAs("C:\\Users\\Public\\Pictures\\" + Title +".jpg");
 
-            m_Book.ActiveChart.ChartTitle.Text = CharName;
 
+           
+  
         }
 
 

@@ -36,6 +36,13 @@ namespace ExcelSubjectAddIn
                 checkedListBox_individual.SetItemChecked(i, false);
             }
         }
+        public void cleanListBox()
+        {
+            for (int i = 0; checkedListBox_individual.Items.Count >i;)
+            {
+                checkedListBox_individual.Items.RemoveAt(0);
+            }
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -53,7 +60,7 @@ namespace ExcelSubjectAddIn
                 if (checkedListBox_individual.GetItemChecked(i) == true)
                 {
                     Chart_index += 1;
-                    studentNumber = share.IndividualSheet.Cells[share.individualMenu_row + 2+i,1].value;
+                    studentNumber = Convert.ToString(share.IndividualSheet.Cells[share.individualMenu_row + 2+i,1].value);
                     share.rendering_diagram.addChart_IndividualSheet(share.IndividualSheet, studentNumber, Chart_index);
                 }
             }

@@ -40,17 +40,76 @@ namespace ExcelSubjectAddIn
         */
         public void renderClassSheet(Excel.Worksheet ClassSheet, string SheetName)
         {
-  
+            //第一行文字渲染
+            ClassSheet.Cells[1, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            ClassSheet.Cells[1, 1].Font.Name = "华文中宋";
+            ClassSheet.Cells[1, 1].Font.Size = 14;
+            //班级情况总结处单元格添加背景颜色
+            Excel.Range Summary_range = ClassSheet.get_Range("A2", "B6");
+            Summary_range.Interior.ColorIndex = 44;
+            Summary_range.Borders.LineStyle = 1;
+            Summary_range.EntireColumn.AutoFit();
+            //添加单元格边框线
+            Excel.Range Data_range = ClassSheet.get_Range("A"+share.classMenu_row, "" + NumToChar(64 + share.subject_num - 3 + 8) + (share.classMenu_row + share.student_num));
+            Data_range.Borders.LineStyle = 1;
         }
         public void renderIndividualSheet(Excel.Worksheet IndividualSheet, string SheetName)
         {
-            
+            //第一行文字居中
+            IndividualSheet.Cells[1, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            IndividualSheet.Cells[1, 1].Font.Name = "华文中宋";
+            IndividualSheet.Cells[1, 1].Font.Size = 14;
+
+            Excel.Range Menu_range = IndividualSheet.get_Range("A2", NumToChar(64 + 9 + share.subject_num - 3) + "3");
+            Menu_range.Font.Name = "宋体";
+            Menu_range.Font.Size = 11;
+            Menu_range.Font.Bold = true;
+            Menu_range.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            Menu_range.WrapText = true;
+
+            Excel.Range Menu2_range = IndividualSheet.get_Range("A3", NumToChar(64 + 9 + share.subject_num - 3) + "3");
+            Menu2_range.RowHeight = 27;
+
+            Excel.Range Column1_range = IndividualSheet.get_Range("A1", "A" + share.student_num + share.individualMenu_row +1);
+            Column1_range.ColumnWidth = 15;
+            Column1_range.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+
+            //添加单元格边框线
+            Excel.Range Data_range = IndividualSheet.get_Range("A1", "" + NumToChar(64 + share.subject_num - 3 + 9) + (share.student_num + 3));
+            Data_range.Borders.LineStyle = 1;
+            //将值为“否”的单元格渲染成黄色
+            for (int i=0; i< share.student_num; i++)
+            {
+                string Grade4 = IndividualSheet.Cells[i + share.individualMenu_row + 2, share.subject_num - 3 + 8].value;
+                string Grade6 = IndividualSheet.Cells[i + share.individualMenu_row + 2, share.subject_num - 3 + 9].value;
+                if (Grade4 == "否")
+                {
+                    IndividualSheet.Cells[i + share.individualMenu_row + 2, share.subject_num - 3 + 8].Interior.ColorIndex =6;
+                }
+                if (Grade6 == "否")
+                {
+                    IndividualSheet.Cells[i + share.individualMenu_row + 2, share.subject_num - 3 + 9].Interior.ColorIndex = 6;
+                }
+
+
+            }
         }
         public void renderLessonSheet(Excel.Worksheet LessonSheet, string SheetName)
         {
-            ExcelGraph p = new ExcelGraph();
-            Excel.Range data = LessonSheet.Range["B2:F2,B3:F3"];
-            //p.CreateChart(share.ExcelApp.ActiveWorkbook, LessonSheet, data, );
+            Excel.Range Title_range = LessonSheet.get_Range("A1", "" + NumToChar(64 + 10) + 1);
+            Title_range.Font.Name = "华文中宋";
+            Title_range.Font.Size = 14;
+            Title_range.Borders.LineStyle = 1;
+            Title_range.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            Excel.Range Menu_range = LessonSheet.get_Range("A2", "" + NumToChar(64 + 10) + 2);
+            Menu_range.Font.Name = "宋体";
+            Menu_range.Font.Bold = true;
+            Menu_range.Font.Size = 11;
+            Menu_range.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            Excel.Range Data_range = LessonSheet.get_Range("A2", "" + NumToChar(64 + 10) + (share.subject_num-3 + 2));
+            Data_range.Borders.LineStyle = 1;
+            Data_range.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            Data_range.ColumnWidth = 13;
         }
         public void addChart_LessonSheet(Excel.Worksheet LessonSheet, string ClassName, int Chart_index)
         {
@@ -90,7 +149,7 @@ namespace ExcelSubjectAddIn
 
 
         }
-        private string NunToChar(int number)
+        private string NumToChar(int number)
         {
             if (65 <= number && 90 >= number)
             {
@@ -103,22 +162,26 @@ namespace ExcelSubjectAddIn
 
         public void addChart_IndividualSheet(Excel.Worksheet IndividualSheet, string  StudentNumber, int Chart_index)
         {
-            string Range_string = "C3:" + NunToChar(64 + 2 + share.subject_num -3) + "3";
+            string Range_string = "C3:" + NumToChar(64 + 2 + share.subject_num -3) + "3";
             int mark_row = 0;
-    
 
-            for (int i = 0 ; i < share.subject_num; i++)
+            for (int i = 0 ; i < share.student_num; i++)
             {
+                //查找对应学号所在行mark_row
+                string str = Convert.ToString(IndividualSheet.Cells[i + share.individualMenu_row + 2, 1].value);
                 if (Convert.ToString(IndividualSheet.Cells[i + share.individualMenu_row + 2, 1].value) == StudentNumber)
                 {
                     mark_row = i + share.individualMenu_row + 2;
-                    Range_string = Range_string + "," + "C" + mark_row + ":" + NunToChar(64 + 2 + share.subject_num - 3) + mark_row;
+                    Range_string = Range_string + "," + "C" + mark_row + ":" + NumToChar(64 + 2 + share.subject_num - 3) + mark_row;
                     break;
                 }
             }  
             Excel.Range data = IndividualSheet.Range[Range_string];
-
-            share.excelEdit.CreateRadarChart(share.ExcelApp.ActiveWorkbook, IndividualSheet, 1, 11, 288, 200, StudentNumber, data, StudentNumber, Chart_index);
+            string StudentName = IndividualSheet.Cells[mark_row, 2].value;
+            string Grade4 = IndividualSheet.Cells[mark_row, share.subject_num -3 +8].value;
+            string Grade6 = IndividualSheet.Cells[mark_row, share.subject_num -3 +9].value;
+            string subtitleText = "四级: " + Grade4 + "\n" + "六级: " + Grade6;
+            share.excelEdit.CreateRadarChart(share.ExcelApp.ActiveWorkbook, IndividualSheet, 1, 11, 288, 200, StudentName, data, StudentNumber, Chart_index, subtitleText);
 
         }
 
