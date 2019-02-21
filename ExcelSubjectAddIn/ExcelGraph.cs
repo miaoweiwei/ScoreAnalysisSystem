@@ -223,6 +223,13 @@ namespace ExcelSubjectAddIn
             m_Book.ActiveChart.Legend.Font.Bold = true;
             m_Book.ActiveChart.Legend.Position = Microsoft.Office.Interop.Excel.XlLegendPosition.xlLegendPositionCorner;//设置图例的位置
             m_Book.ActiveChart.Legend.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置图例边框线条
+            /*
+            Microsoft.Office.Interop.Excel.Axis valueAxis = (Microsoft.Office.Interop.Excel.Axis)m_Book.ActiveChart.Axes(Excel.XlAxisType.xlValue, Excel.XlAxisGroup.xlPrimary);
+            valueAxis.MaximumScale = 100;
+            valueAxis.MinimumScale = 40;
+            valueAxis.MajorUnit = 20;
+            */
+
 
             oSeries = (Microsoft.Office.Interop.Excel.Series)m_Book.ActiveChart.SeriesCollection(1);
 

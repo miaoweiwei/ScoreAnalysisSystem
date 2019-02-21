@@ -446,7 +446,6 @@ namespace ExcelSubjectAddIn
             m_Book.ActiveChart.Legend.Font.Bold = true;
             m_Book.ActiveChart.Legend.Position = Microsoft.Office.Interop.Excel.XlLegendPosition.xlLegendPositionCorner;//设置图例的位置
             m_Book.ActiveChart.Legend.Border.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone;//设置图例边框线条
-
             oSeries = (Microsoft.Office.Interop.Excel.Series)m_Book.ActiveChart.SeriesCollection(1);
             oSeries.Name = CharName;
             oSeries.Border.ColorIndex = 45;
@@ -456,8 +455,13 @@ namespace ExcelSubjectAddIn
             //m_Book.ActiveChart.SaveAs("C:\\Users\\Public\\Pictures\\" + Title +".jpg");
 
 
-           
-  
+            m_Book.ActiveChart.Axes(Excel.XlAxisType.xlValue).MaximumScaleIsAuto = false;
+            m_Book.ActiveChart.Axes(Excel.XlAxisType.xlValue).MaximumScale = 100;
+            m_Book.ActiveChart.Axes(Excel.XlAxisType.xlValue).MinimumScaleIsAuto = false;
+            m_Book.ActiveChart.Axes(Excel.XlAxisType.xlValue).MinimumScale = 50;
+            m_Book.ActiveChart.Axes(Excel.XlAxisType.xlValue).MajorUnitIsAuto = false;
+            m_Book.ActiveChart.Axes(Excel.XlAxisType.xlValue).MajorUnit = 10;
+
         }
 
 
